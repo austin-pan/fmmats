@@ -4,7 +4,7 @@ A Python library to simplify the creation of files needed for Stephen Rendle's L
 
 ## Installation
 
-This library hasn't been added to PyPI yet so you can't install without cloning this repo yet.
+This library hasn't been added to PyPI yet so you can't install it without cloning this repo yet.
 
 To manually install the library, you can run the following.
 ```
