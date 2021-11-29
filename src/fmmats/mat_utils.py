@@ -49,3 +49,21 @@ def normalize_columns(
     df = (df - df_min) / (df_max - df_min) # Normalize columns to a range of [0-1]
     
     return df
+
+
+def standardize_columns(
+    df: _pd.DataFrame,
+    in_place: bool = False) -> _pd.DataFrame:
+    '''
+    Returns the normalized by column version of the dataframe using min-max normalization to achieve a mean of 0 and std of 1.
+    Columns filled with the same value will be replaced with ``NaN``.
+    '''
+    
+    if not in_place:
+        df = df.copy()
+
+    df_mean = df.mean()
+    df_std = df.std()
+    df = (df - df_mean) / df_std # Standardize columns to have a mean of 0 and std of 1
+    
+    return df

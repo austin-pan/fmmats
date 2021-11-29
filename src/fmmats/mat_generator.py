@@ -153,13 +153,17 @@ def write_bs_mats(
 
     for split in mapping_split:
         mapping = mapping_split[split]
+        mapping_idx_names = set(mapping.index.names)
         _np.savetxt(_os.path.join(out_dir, f'{prefix}{split}'), _np.ravel(mapping[target_col]), fmt='%f')
 
-        mapping = mapping.drop(columns=mapping.columns)
+        mapping = mapping.drop(columns=mapping.columns).reset_index()
         for block_name, block in blocks.items():
             block = block.drop(columns=block.columns)
             block['block_row_num'] = range(len(block))
-            block_mappings = mapping.droplevel(level=mapping.index.names.difference(block.index.names)).join(block.droplevel(level=block.index.names.difference(mapping.index.names)), rsuffix=f'_{block_name}').block_row_num
+            block_idx_diff = block.index.names.difference(mapping_idx_names)
+            idx_intersection = [idx_name for idx_name in block.index.names if idx_name in mapping_idx_names] # Ordered intersection of index names
+
+            block_mappings = mapping.join(block.droplevel(level=block_idx_diff), on=idx_intersection, rsuffix=f'_{block_name}').block_row_num
 
             _np.savetxt(_os.path.join(out_dir, f'{prefix}{block_name}.{split}'), block_mappings, fmt='%i')
     
